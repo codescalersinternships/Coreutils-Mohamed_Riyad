@@ -1,43 +1,41 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func check(e error) {
 	if e != nil {
-		panic(e)
+		log.Fatal(e)
 	}
 }
-func parserTree(input string) (string, error) {
-	words := strings.Fields(input)
-	if len(words) == 0 || words[0] != "tree" {
-		return "", fmt.Errorf("error: command must start with 'tree'")
+func parserTree() (string, error) {
+	args := os.Args[1:]
+	var err error = nil
+
+	if len(args) != 1 {
+		err = fmt.Errorf("Incorrect number of arguments. Expected 1, got %d", len(args))
 	}
+	var filePath = args[0]
 
-	if len(words) != 2 {
-		return "", fmt.Errorf("error: incorrect number of arguments")
-	}
-
-	var filePath string = words[1]
-
-	return filePath, nil
+	return filePath, err
 }
 func printSpaces(level int) {
 	spaces := ""
 	for i := 0; i < level; i++ {
-		spaces += "  "
+		spaces += "   "
 	}
-	fmt.Print(spaces)
+	fmt.Print(spaces + "|__")
 }
 func printTree(dirPath string, level int) {
 	fileInfo, err := os.Stat(dirPath)
 	check(err)
-	printSpaces(level)
+	if level != 0 {
+		printSpaces(level)
+	}
 	fmt.Println(fileInfo.Name())
 
 	if !fileInfo.Mode().IsRegular() {
@@ -52,12 +50,7 @@ func printTree(dirPath string, level int) {
 	}
 }
 func main() {
-	var input string
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter command: ")
-	input, err := reader.ReadString('\n')
-	check(err)
-	dirPath, err := parserTree(input)
+	dirPath, err := parserTree()
 	check(err)
 	printTree(dirPath, 0)
 }
