@@ -15,14 +15,15 @@ func check(e error) {
 
 func parserCat(input string) (string, error) {
 	words := strings.Fields(input)
-	if len(words) == 0 || words[0] != "cat" {
-		return "", fmt.Errorf("error: command must start with 'cat'")
+	if len(words) == 0 || words[0] != "tree" {
+		return "", fmt.Errorf("error: command must start with 'tree'")
 	}
-	var filePath string = words[1]
 
 	if len(words) != 2 {
 		return "", fmt.Errorf("error: incorrect number of arguments")
 	}
+
+	var filePath string = words[1]
 
 	return filePath, nil
 }
