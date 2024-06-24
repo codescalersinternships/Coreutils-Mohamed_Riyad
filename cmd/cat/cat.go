@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -14,7 +15,8 @@ func check(e error) {
 }
 
 func parserCat() (string, error) {
-	args := os.Args[1:]
+
+	args := flag.Args()
 	var err error = nil
 
 	if len(args) != 1 {
@@ -24,20 +26,28 @@ func parserCat() (string, error) {
 
 	return filePath, err
 }
-func printFile(fileName string) {
+func printFile(fileName string, num int) {
 
 	f, err := os.Open(fileName)
 	check(err)
 
 	scanner := bufio.NewScanner(f)
 	check(err)
-
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+	if num == -1 {
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+	} else {
+		for i := 0; scanner.Scan() && i < num; i++ {
+			fmt.Println(scanner.Text())
+		}
 	}
 }
 func main() {
+	var num int
+	flag.IntVar(&num, "n", -1, "Number of lines which will be printed from the beginning of file")
+	flag.Parse()
 	filePath, err := parserCat()
 	check(err)
-	printFile(filePath)
+	printFile(filePath, num)
 }
