@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func check(e error) {
@@ -24,10 +25,7 @@ func parserTree() (string, error) {
 	return filePath, err
 }
 func printSpaces(level int) {
-	spaces := ""
-	for i := 0; i < level; i++ {
-		spaces += "   "
-	}
+	spaces := strings.Repeat("  ", level)
 	fmt.Print(spaces + "|__")
 }
 func printTree(dirPath string, level int) {

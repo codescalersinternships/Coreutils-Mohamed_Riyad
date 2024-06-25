@@ -34,16 +34,16 @@ func count(fileName string) (int, int, int) {
 
 	scanner := bufio.NewScanner(f)
 	check(err)
-	var linesCount int = 0
-	var wordCount int = 0
-	var charCount int = 0
+	var linesCount int
+	var wordCount int
+	var charCount int
 	for scanner.Scan() {
 		linesCount++
 		line := scanner.Text()
 		charCount += len(line)
 		wordCount += len(strings.Fields(line))
 	}
-	return linesCount - 1, wordCount, charCount - 1
+	return linesCount, wordCount, charCount
 }
 func main() {
 	var numberOfLinesOnly bool

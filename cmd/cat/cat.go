@@ -20,7 +20,7 @@ func parserCat() (string, error) {
 	var err error = nil
 
 	if len(args) != 1 {
-		err = fmt.Errorf("Incorrect number of arguments. Expected 1, got %d", len(args))
+		return "", fmt.Errorf("Incorrect number of arguments. Expected 1, got %d", len(args))
 	}
 	var filePath = args[0]
 
