@@ -14,7 +14,7 @@ func check(e error) {
 	}
 }
 
-func parserHead() (string, error) {
+func headArgumentsValidator() (string, error) {
 
 	args := flag.Args()
 	var err error = nil
@@ -27,11 +27,11 @@ func parserHead() (string, error) {
 	return filePath, err
 }
 
-func printLinesHead(fileName string, num int) {
+func printLinesHead(fileName string, num int) (err error) {
 
 	f, err := os.Open(fileName)
 	if err != nil {
-		check(fmt.Errorf("failed to open file"))
+		return fmt.Errorf("failed to open file")
 	}
 	defer f.Close()
 
@@ -44,18 +44,16 @@ func printLinesHead(fileName string, num int) {
 			break
 		}
 	}
+	return nil
 
-	if err := scanner.Err(); err != nil {
-		check(fmt.Errorf("error while reading file"))
-	}
 }
 
 func main() {
 	var num int
 	flag.IntVar(&num, "n", 10, "Number of lines which will be printed from the beginning of file")
 	flag.Parse()
-	filePath, err := parserHead()
+	filePath, err := headArgumentsValidator()
 	check(err)
-	printLinesHead(filePath, num)
-
+	err = printLinesHead(filePath, num)
+	check(err)
 }

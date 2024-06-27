@@ -13,7 +13,7 @@ func check(e error) {
 	}
 }
 
-func parserTail() (string, error) {
+func tailArgumentsValidator() (string, error) {
 
 	args := flag.Args()
 	var err error = nil
@@ -26,13 +26,15 @@ func parserTail() (string, error) {
 	return filePath, err
 }
 
-func printLinesTail(fileName string, num int) {
+func printLinesTail(fileName string, num int) (err error) {
 
 	f, err := os.Open(fileName)
-	check(err)
+	if err != nil {
+		return err
+	}
 
 	scanner := bufio.NewScanner(f)
-	check(err)
+
 	var lines []string
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
@@ -43,15 +45,16 @@ func printLinesTail(fileName string, num int) {
 	for i := end; i < n; i++ {
 		fmt.Println(lines[i])
 	}
-
+	return nil
 }
 
 func main() {
 	var num int
 	flag.IntVar(&num, "n", 10, "Number of lines which will be printed from the beginning of file")
 	flag.Parse()
-	filePath, err := parserTail()
+	filePath, err := tailArgumentsValidator()
 	check(err)
-	printLinesTail(filePath, num)
+	err = printLinesTail(filePath, num)
+	check(err)
 
 }

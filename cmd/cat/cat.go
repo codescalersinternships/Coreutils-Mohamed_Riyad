@@ -14,7 +14,7 @@ func check(e error) {
 	}
 }
 
-func parserCat() (string, error) {
+func catArgumentsValidator() (string, error) {
 
 	args := flag.Args()
 	var err error = nil
@@ -26,28 +26,30 @@ func parserCat() (string, error) {
 
 	return filePath, err
 }
-func printFile(fileName string, num int) {
+func printFile(fileName string, lineNumber bool) (err error) {
 
 	f, err := os.Open(fileName)
-	check(err)
+	if err != nil {
+		return err
+	}
 
 	scanner := bufio.NewScanner(f)
-	check(err)
-	if num == -1 {
-		for scanner.Scan() {
-			fmt.Println(scanner.Text())
+
+	for i := 0; scanner.Scan(); i++ {
+		if lineNumber {
+			fmt.Print(i + 1)
 		}
-	} else {
-		for i := 0; scanner.Scan() && i < num; i++ {
-			fmt.Println(scanner.Text())
-		}
+		fmt.Println(scanner.Text())
 	}
+	return nil
+
 }
 func main() {
-	var num int
-	flag.IntVar(&num, "n", -1, "Number of lines which will be printed from the beginning of file")
+	var lineNumber bool
+	flag.BoolVar(&lineNumber, "n", false, "Number of line will be printed from the beginning of line")
 	flag.Parse()
-	filePath, err := parserCat()
+	filePath, err := catArgumentsValidator()
 	check(err)
-	printFile(filePath, num)
+	err = printFile(filePath, lineNumber)
+	check(err)
 }

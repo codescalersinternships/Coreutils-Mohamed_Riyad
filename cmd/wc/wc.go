@@ -14,7 +14,7 @@ func check(e error) {
 		log.Fatal(e)
 	}
 }
-func parserWc() (string, error) {
+func wcArgumentsValidator() (string, error) {
 
 	args := flag.Args()
 	var err error = nil
@@ -54,18 +54,21 @@ func main() {
 	flag.BoolVar(&numberOfWordsOnly, "w", false, "Print only number of words")
 
 	flag.Parse()
-	filePath, err := parserWc()
+	filePath, err := wcArgumentsValidator()
 	check(err)
+	if !numberOfCharsOnly && !numberOfLinesOnly && !numberOfWordsOnly {
+		numberOfCharsOnly = true
+		numberOfLinesOnly = true
+		numberOfWordsOnly = true
+	}
 	linesCount, wordCount, charCount := count(filePath)
 	if numberOfLinesOnly {
-		fmt.Println("number of lines", linesCount)
-	} else if numberOfWordsOnly {
-		fmt.Println("number of words", wordCount)
-	} else if numberOfCharsOnly {
-		fmt.Println("number of chars", charCount)
-	} else {
-		fmt.Println("number of lines", linesCount)
-		fmt.Println("number of words", wordCount)
-		fmt.Println("number of chars", charCount)
+		fmt.Print(linesCount)
+	}
+	if numberOfWordsOnly {
+		fmt.Print(wordCount)
+	}
+	if numberOfCharsOnly {
+		fmt.Print(charCount)
 	}
 }

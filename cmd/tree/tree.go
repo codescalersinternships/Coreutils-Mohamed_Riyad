@@ -13,7 +13,7 @@ func check(e error) {
 		log.Fatal(e)
 	}
 }
-func parserTree() (string, error) {
+func treeArgumentsValidator() (string, error) {
 	args := os.Args[1:]
 	var err error = nil
 
@@ -28,9 +28,11 @@ func printSpaces(level int) {
 	spaces := strings.Repeat("  ", level)
 	fmt.Print(spaces + "|__")
 }
-func printTree(dirPath string, level int) {
+func printTree(dirPath string, level int) (err error) {
 	fileInfo, err := os.Stat(dirPath)
-	check(err)
+	if err != nil {
+		return err
+	}
 	if level != 0 {
 		printSpaces(level)
 	}
@@ -38,17 +40,23 @@ func printTree(dirPath string, level int) {
 
 	if !fileInfo.Mode().IsRegular() {
 		dir, err := os.Open(dirPath)
-		check(err)
+		if err != nil {
+			return err
+		}
 		files, err := dir.Readdir(-1)
-		check(err)
+		if err != nil {
+			return err
+		}
 		for _, file := range files {
 			newPath := filepath.Join(dirPath, file.Name())
 			printTree(newPath, level+1)
 		}
 	}
+	return nil
 }
 func main() {
-	dirPath, err := parserTree()
+	dirPath, err := treeArgumentsValidator()
 	check(err)
-	printTree(dirPath, 0)
+	err = printTree(dirPath, 0)
+	check(err)
 }
